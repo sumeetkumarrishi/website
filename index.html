@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sumeet Kumar — Knowledge Base</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root {
+    --bg: #f4f6fb;
+    --bg-elevated: #ffffff;
+    --text: #0b1220;
+    --text-muted: #5b6478;
+    --text-soft: #8b93a7;
+    --border: rgba(15, 23, 42, 0.08);
+    --accent: #2563eb;
+    --accent-hover: #1d4ed8;
+    --accent-soft: rgba(37, 99, 235, 0.1);
+    --accent-glow: rgba(37, 99, 235, 0.18);
+    --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04);
+    --shadow-md: 0 12px 40px rgba(15, 23, 42, 0.08);
+    --shadow-lg: 0 24px 64px rgba(15, 23, 42, 0.12);
+    --radius-sm: 10px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+    --max-width: 1120px;
+    --header-height: 72px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: "DM Sans", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background:
+        radial-gradient(circle at 15% 10%, rgba(37, 99, 235, 0.08), transparent 28%),
+        radial-gradient(circle at 85% 0%, rgba(99, 102, 241, 0.06), transparent 24%),
+        radial-gradient(circle at 50% 100%, rgba(14, 165, 233, 0.05), transparent 30%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.container {
+    width: min(100% - 2rem, var(--max-width));
+    margin-inline: auto;
+}
+
+/* Header */
+header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    height: var(--header-height);
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+}
+
+.header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 700;
+    font-size: 1.05rem;
+    letter-spacing: -0.02em;
+}
+
+.logo-mark {
+    width: 36px;
+    height: 36px;
+    border-radius: 11px;
+    background: linear-gradient(135deg, #2563eb, #6366f1);
+    color: white;
+    display: grid;
+    place-items: center;
+    font-size: 0.85rem;
+    font-weight: 700;
+    box-shadow: 0 8px 20px var(--accent-glow);
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    flex-wrap: wrap;
+}
+
+nav > a,
+.nav-item > .nav-trigger {
+    padding: 0.5rem 0.85rem;
+    border-radius: 999px;
+    color: var(--text-muted);
+    font-size: 0.92rem;
+    font-weight: 500;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+nav > a:hover,
+nav > a.active,
+.nav-item:hover > .nav-trigger,
+.nav-item:focus-within > .nav-trigger {
+    background: var(--accent-soft);
+    color: var(--accent);
+}
+
+.nav-item {
+    position: relative;
+}
+
+.submenu {
+    position: absolute;
+    top: calc(100% + 0.45rem);
+    left: 0;
+    min-width: 210px;
+    padding: 0.45rem;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-md);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(6px);
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+    z-index: 200;
+}
+
+.nav-item:hover > .submenu,
+.nav-item:focus-within > .submenu,
+.submenu-item:hover > .submenu,
+.submenu-item:focus-within > .submenu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.submenu-item {
+    position: relative;
+}
+
+.submenu-trigger,
+.submenu a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.65rem 0.85rem;
+    border-radius: 8px;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.submenu-trigger {
+    cursor: default;
+}
+
+.submenu-trigger::after {
+    content: "›";
+    color: var(--text-soft);
+    font-size: 1rem;
+    line-height: 1;
+}
+
+.submenu a:hover,
+.submenu-item:hover > .submenu-trigger,
+.submenu a.active {
+    background: var(--accent-soft);
+    color: var(--accent);
+}
+
+.submenu.nested {
+    top: -0.45rem;
+    left: calc(100% + 0.35rem);
+    min-width: 190px;
+}
+
+/* Hero */
+.hero {
+    padding: 5.5rem 0 4rem;
+}
+
+.eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.85rem;
+    border-radius: 999px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    font-weight: 600;
+    margin-bottom: 1.25rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.eyebrow-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.15);
+}
+
+.hero h1 {
+    font-family: "Instrument Serif", Georgia, serif;
+    font-size: clamp(2.8rem, 6vw, 4.5rem);
+    line-height: 1.02;
+    letter-spacing: -0.03em;
+    font-weight: 400;
+    margin-bottom: 1.25rem;
+}
+
+.hero h1 em {
+    font-style: italic;
+    color: var(--accent);
+}
+
+.hero p {
+    font-size: 1.12rem;
+    color: var(--text-muted);
+    max-width: 34rem;
+}
+
+/* Sections */
+.section {
+    padding: 1.5rem 0 4rem;
+}
+
+.section-header {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.section-header h2 {
+    font-size: 1.65rem;
+    letter-spacing: -0.03em;
+}
+
+.section-header p {
+    color: var(--text-muted);
+    max-width: 28rem;
+    font-size: 0.98rem;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+}
+
+.card {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 1.4rem;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+    border-color: rgba(37, 99, 235, 0.18);
+}
+
+.card-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    font-size: 1.15rem;
+    margin-bottom: 1rem;
+}
+
+.card-icon.ai { background: rgba(37, 99, 235, 0.12); }
+.card-icon.eng { background: rgba(14, 165, 233, 0.12); }
+.card-icon.product { background: rgba(168, 85, 247, 0.12); }
+.card-icon.lead { background: rgba(249, 115, 22, 0.12); }
+
+.card h3 {
+    font-size: 1.05rem;
+    margin-bottom: 0.55rem;
+}
+
+.card p {
+    color: var(--text-muted);
+    font-size: 0.94rem;
+    line-height: 1.55;
+}
+
+.split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.panel {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.panel-label {
+    display: inline-block;
+    margin-bottom: 0.75rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+}
+
+.panel h3 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+}
+
+.topic-list {
+    list-style: none;
+    display: grid;
+    gap: 0.65rem;
+}
+
+.topic-list li a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.85rem 1rem;
+    border-radius: var(--radius-sm);
+    background: #f8faff;
+    border: 1px solid transparent;
+    color: var(--text);
+    font-weight: 500;
+    transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.topic-list li a:hover {
+    background: white;
+    border-color: var(--border);
+    transform: translateX(3px);
+}
+
+.topic-list li a span {
+    color: var(--text-soft);
+    font-size: 0.82rem;
+    font-weight: 500;
+}
+
+.view-hidden {
+    display: none;
+}
+
+#article-view {
+    padding: 2.5rem 0 4rem;
+}
+
+.article-content {
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 2.5rem;
+    box-shadow: var(--shadow-sm);
+    line-height: 1.7;
+}
+
+.article-content h1,
+.article-content h2,
+.article-content h3 {
+    color: var(--text);
+}
+
+.article-content h1 {
+    font-family: "Instrument Serif", Georgia, serif;
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    margin-bottom: 0.75rem;
+}
+
+.article-content h2 {
+    font-size: 1.35rem;
+    margin: 2rem 0 0.75rem;
+}
+
+.article-content h3 {
+    font-size: 1.05rem;
+    margin: 1.25rem 0 0.5rem;
+}
+
+.article-content p,
+.article-content li {
+    color: var(--text-muted);
+}
+
+.article-content ol,
+.article-content ul {
+    margin: 0.75rem 0 0.75rem 1.25rem;
+}
+
+.article-content .box {
+    background: #f8faff;
+    border: 1px solid var(--border);
+    padding: 1.25rem;
+    border-radius: var(--radius-sm);
+    margin: 1.5rem 0;
+}
+
+.article-loading,
+.article-error {
+    color: var(--text-muted);
+    padding: 2rem 0;
+}
+
+.nav-link[data-page],
+.submenu a[data-page] {
+    cursor: pointer;
+}
+
+/* Footer */
+footer {
+    margin-top: 2rem;
+    padding: 2rem 0 2.5rem;
+    border-top: 1px solid var(--border);
+}
+
+.footer-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    color: var(--text-soft);
+    font-size: 0.92rem;
+}
+
+.footer-links {
+    display: flex;
+    gap: 1rem;
+}
+
+.footer-links a:hover {
+    color: var(--accent);
+}
+
+@media (max-width: 960px) {
+    .grid,
+    .split {
+        grid-template-columns: 1fr;
+    }
+
+    .hero {
+        padding-top: 3.5rem;
+    }
+
+    nav {
+        display: none;
+    }
+}
+
+@media (max-width: 640px) {
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .footer-inner {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+</style>
+</head>
+<body>
+
+<header>
+    <div class="container header-inner">
+        <a href="#home" class="logo" data-page="home">
+            <span class="logo-mark">SK</span>
+            <span>Sumeet Kumar</span>
+        </a>
+        <nav>
+            <a href="#home" class="nav-link active" data-page="home">Home</a>
+            <div class="nav-item">
+                <a href="#" class="nav-trigger">AI</a>
+                <div class="submenu">
+                    <div class="submenu-item">
+                        <span class="submenu-trigger">LLM evaluation</span>
+                        <div class="submenu nested">
+                            <a href="#choose-right-llm" data-page="choose-right-llm">Choosing LLM</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <a href="#">Engineering</a>
+            <a href="#">Product</a>
+            <a href="#">Leadership</a>
+            <a href="#">Projects</a>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <div id="home-view">
+    <section class="hero">
+        <div class="container">
+            <div class="eyebrow">
+                <span class="eyebrow-dot"></span>
+                Personal knowledge base
+            </div>
+            <h1>Knowledge that <em>compounds</em></h1>
+            <p>
+                A living archive of concepts, experiments, projects, and lessons
+                learned across AI, engineering, product, and leadership.
+            </p>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <div>
+                    <h2>Knowledge domains</h2>
+                    <p>Explore notes organized by the areas where ideas, tools, and decisions intersect.</p>
+                </div>
+            </div>
+            <div class="grid">
+                <article class="card">
+                    <div class="card-icon ai">🤖</div>
+                    <h3>AI</h3>
+                    <p>LLMs, RAG, agents, fine-tuning, prompt engineering, and hands-on experiments.</p>
+                </article>
+                <article class="card">
+                    <div class="card-icon eng">⚙️</div>
+                    <h3>Engineering</h3>
+                    <p>AWS, DevOps, architecture patterns, and software development practice.</p>
+                </article>
+                <article class="card">
+                    <div class="card-icon product">📱</div>
+                    <h3>Product</h3>
+                    <p>Telecom, product management, and customer experience design.</p>
+                </article>
+                <article class="card">
+                    <div class="card-icon lead">👥</div>
+                    <h3>Leadership</h3>
+                    <p>Team building, strategy, and technology leadership in practice.</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <div class="container split">
+            <div class="panel">
+                <span class="panel-label">Featured</span>
+                <h3>Evaluating LLMs</h3>
+                <ul class="topic-list">
+                    <li><a href="#choose-right-llm" data-page="choose-right-llm">Choosing the Right LLM <span>Guide</span></a></li>
+                    <li><a href="#">Chinchilla Scaling Law <span>Concept</span></a></li>
+                    <li><a href="#">LLM Benchmarks <span>Reference</span></a></li>
+                </ul>
+            </div>
+            <div class="panel">
+                <span class="panel-label">Recent</span>
+                <h3>Latest additions</h3>
+                <ul class="topic-list">
+                    <li><a href="#choose-right-llm" data-page="choose-right-llm">Choosing the Right LLM <span>Today</span></a></li>
+                    <li><a href="#">Chinchilla Scaling Law <span>2 days ago</span></a></li>
+                    <li><a href="#">LLM Benchmarks <span>4 days ago</span></a></li>
+                </ul>
+            </div>
+        </div>
+    </section>
+    </div>
+
+    <div id="article-view" class="view-hidden">
+        <div class="container">
+            <div id="article-content" class="article-content"></div>
+        </div>
+    </div>
+</main>
+
+<footer>
+    <div class="container footer-inner">
+        <span>© 2026 Sumeet Kumar · sumeetkumar.tech</span>
+        <div class="footer-links">
+            <a href="#">About</a>
+            <a href="#">Contact</a>
+            <a href="#">RSS</a>
+        </div>
+    </div>
+</footer>
+
+<script>
+const pages = {
+    home: { type: "home" },
+    "choose-right-llm": {
+        type: "article",
+        url: "AI/eval-model/choose_right_llm.html",
+        title: "Choosing the Right LLM"
+    }
+};
+
+const homeView = document.getElementById("home-view");
+const articleView = document.getElementById("article-view");
+const articleContent = document.getElementById("article-content");
+const navLinks = document.querySelectorAll("[data-page]");
+
+function setActiveNav(pageId) {
+    navLinks.forEach((link) => {
+        link.classList.toggle("active", link.dataset.page === pageId);
+    });
+}
+
+function showHome() {
+    homeView.classList.remove("view-hidden");
+    articleView.classList.add("view-hidden");
+    document.title = "Sumeet Kumar — Knowledge Base";
+    setActiveNav("home");
+}
+
+async function loadArticle(pageId) {
+    const page = pages[pageId];
+    if (!page || page.type !== "article") {
+        showHome();
+        return;
+    }
+
+    homeView.classList.add("view-hidden");
+    articleView.classList.remove("view-hidden");
+    articleContent.innerHTML = '<p class="article-loading">Loading...</p>';
+    document.title = `${page.title} — Sumeet Kumar`;
+    setActiveNav(pageId);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+
+    try {
+        const response = await fetch(page.url);
+        if (!response.ok) {
+            throw new Error(`Failed to load ${page.url}`);
+        }
+
+        const html = await response.text();
+        const doc = new DOMParser().parseFromString(html, "text/html");
+        articleContent.innerHTML = doc.body.innerHTML;
+    } catch (error) {
+        articleContent.innerHTML =
+            `<p class="article-error">Could not load this page. Open the site through a local web server rather than directly from the file system.</p>`;
+        console.error(error);
+    }
+}
+
+function navigate(pageId, updateHash = true) {
+    if (pageId === "home") {
+        showHome();
+    } else {
+        loadArticle(pageId);
+    }
+
+    if (updateHash) {
+        location.hash = pageId === "home" ? "home" : pageId;
+    }
+}
+
+function handleRoute() {
+    const pageId = location.hash.replace("#", "") || "home";
+    navigate(pageId, false);
+}
+
+navLinks.forEach((link) => {
+    link.addEventListener("click", (event) => {
+        event.preventDefault();
+        navigate(link.dataset.page);
+    });
+});
+
+window.addEventListener("hashchange", handleRoute);
+handleRoute();
+</script>
+
+</body>
+</html>
