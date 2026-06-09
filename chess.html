@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AI vs AI Chess — gpt-4.1 vs gpt-5</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 1rem 1.5rem 2rem;
+      background: #0f172a;
+      color: #e5e7eb;
+      min-height: 100vh;
+    }
+
+    h1 { margin: 0 0 0.2rem; font-size: 1.7rem; }
+    .subtitle { color: #9ca3af; margin-bottom: 1.2rem; font-size: 0.9rem; }
+
+    .layout {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 1.2rem;
+      align-items: start;
+    }
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: 1fr; }
+    }
+
+    /* ── Chess Board ── */
+    .board-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0;
+      user-select: none;
+    }
+    .board-row {
+      display: flex;
+      align-items: center;
+    }
+    .rank-label {
+      width: 22px;
+      text-align: center;
+      font-size: 0.72rem;
+      color: #64748b;
+      flex-shrink: 0;
+    }
+    .board-grid {
+      display: grid;
+      grid-template-columns: repeat(8, 64px);
+      grid-template-rows: repeat(8, 64px);
+      border: 2px solid #334155;
+      border-radius: 4px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.7);
+    }
+    .file-labels {
+      display: flex;
+      padding-left: 22px;
+    }
+    .file-label {
+      width: 64px;
+      text-align: center;
+      font-size: 0.72rem;
+      color: #64748b;
+      margin-top: 4px;
+    }
+    .sq {
+      width: 64px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      line-height: 1;
+      cursor: default;
+      transition: background 0.15s;
+      position: relative;
+    }
+    .sq.light { background: #f0d9b5; }
+    .sq.dark  { background: #b58863; }
+    .sq.last-move-light { background: #cdd16e; }
+    .sq.last-move-dark  { background: #aaa23a; }
+    .sq .piece {
+      pointer-events: none;
+      line-height: 1;
+      filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5));
+    }
+
+    /* ── Right Panel ── */
+    .panel {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      min-width: 0;
+    }
+    .card {
+      background: #020617;
+      border-radius: 0.75rem;
+      padding: 0.9rem 1rem;
+      border: 1px solid #1e293b;
+    }
+    .label {
+      font-size: 0.7rem;
+      color: #9ca3af;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.3rem;
+    }
+
+    input[type="text"] {
+      background: #0f172a;
+      border-radius: 999px;
+      border: 1px solid #1f2937;
+      padding: 0.35rem 0.8rem;
+      font-size: 0.82rem;
+      color: #e5e7eb;
+      width: 100%;
+    }
+    input[type="text"]::placeholder { color: #4b5563; }
+    .small { font-size: 0.72rem; color: #9ca3af; margin-top: 0.2rem; }
+
+    .controls { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.6rem; }
+    button {
+      border-radius: 999px;
+      border: none;
+      padding: 0.45rem 1rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: #fff;
+      box-shadow: 0 8px 20px rgba(34,197,94,0.35);
+      transition: transform 0.08s, box-shadow 0.08s, opacity 0.08s;
+    }
+    button:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 12px 28px rgba(34,197,94,0.45); }
+    button:disabled { opacity: 0.38; cursor: default; box-shadow: none; transform: none; }
+    .danger {
+      background: linear-gradient(135deg, #f97316, #dc2626);
+      box-shadow: 0 8px 20px rgba(239,68,68,0.35);
+    }
+
+    .pill-row { display: flex; gap: 0.35rem; flex-wrap: wrap; margin-top: 0.4rem; }
+    .pill {
+      font-size: 0.68rem;
+      padding: 0.18rem 0.5rem;
+      border-radius: 999px;
+      border: 1px solid #1f2937;
+      background: rgba(15,23,42,0.9);
+      color: #9ca3af;
+    }
+    .pill strong { color: #e5e7eb; }
+
+    .status {
+      font-size: 0.82rem;
+      color: #a5b4fc;
+      min-height: 1.2rem;
+      padding: 0.25rem 0;
+    }
+
+    /* model indicator */
+    .turn-indicator {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.82rem;
+      margin-top: 0.4rem;
+    }
+    .dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .dot.white { background: #f8fafc; border: 1px solid #94a3b8; }
+    .dot.black { background: #1e293b; border: 1px solid #475569; }
+
+    .logs {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 0.76rem;
+      white-space: pre-wrap;
+      background: #020617;
+      border-radius: 0.5rem;
+      border: 1px solid #1f2937;
+      padding: 0.5rem 0.75rem;
+      max-height: 340px;
+      overflow-y: auto;
+      color: #cbd5e1;
+    }
+    .logs .log-white { color: #fbbf24; }
+    .logs .log-black { color: #38bdf8; }
+    .logs .log-err   { color: #f87171; }
+    .logs .log-ok    { color: #86efac; }
+
+    .board-error {
+      grid-column: 1 / -1;
+      color: #f87171;
+      font-weight: 700;
+      padding: 16px;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>AI vs AI Chess</h1>
+  <div class="subtitle">
+    ♔ <strong style="color:#fbbf24">gpt-4.1</strong> (White) &nbsp;vs&nbsp;
+    ♚ <strong style="color:#38bdf8">gpt-5</strong> (Black)
+  </div>
+
+  <div class="layout">
+
+    <!-- Board -->
+    <div class="board-wrap">
+      <div class="board-row">
+        <div class="rank-label"></div>
+        <div id="boardGrid" class="board-grid"></div>
+      </div>
+      <div class="file-labels" id="fileLabels"></div>
+    </div>
+
+    <!-- Right panel -->
+    <div class="panel">
+
+      <div class="card">
+        <div class="label">OpenAI API Key (local use only)</div>
+        <input id="apiKeyInput" type="text" placeholder="sk-..." />
+        <div class="small">Key is sent directly to OpenAI from your browser. Never share this page publicly.</div>
+
+        <div class="controls">
+          <button id="startBtn">▶ Start game</button>
+          <button id="stopBtn" class="danger" disabled>■ Stop</button>
+        </div>
+
+        <div class="pill-row">
+          <div class="pill"><strong>White</strong>: gpt-4.1</div>
+          <div class="pill"><strong>Black</strong>: gpt-5</div>
+        </div>
+
+        <div class="turn-indicator" id="turnIndicator" style="margin-top:0.7rem;">
+          <div class="dot white"></div>
+          <span id="turnText">White to move</span>
+        </div>
+        <div id="status" class="status">Ready. Paste API key and press Start.</div>
+      </div>
+
+      <div class="card">
+        <div class="label">Move log</div>
+        <div id="log" class="logs"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- chess.js for move validation
+      Note: the CDN build may be ESM. We load it as a module and expose window.Chess. -->
+  <script type="module">
+    import * as chessMod from "https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.13.4/chess.min.js";
+    // Handle common export shapes: named export, default export, or default-wrapped.
+    window.Chess = chessMod.Chess || chessMod.default?.Chess || chessMod.default || chessMod;
+  </script>
+
+  <script>
+    // ── Config ──────────────────────────────────────────────
+    const MODEL_WHITE = "gpt-4.1";
+    const MODEL_BLACK = "gpt-5";
+    const API_URL     = "https://api.openai.com/v1/chat/completions";
+
+    // Unicode chess pieces
+    const PIECES = {
+      wK:"♔", wQ:"♕", wR:"♖", wB:"♗", wN:"♘", wP:"♙",
+      bK:"♚", bQ:"♛", bR:"♜", bB:"♝", bN:"♞", bP:"♟"
+    };
+
+    // ── State ────────────────────────────────────────────────
+    let game;
+    let running = false;
+    let lastMove = null; // { from, to }
+
+    // ── DOM refs ─────────────────────────────────────────────
+    const apiKeyInput    = document.getElementById("apiKeyInput");
+    const startBtn       = document.getElementById("startBtn");
+    const stopBtn        = document.getElementById("stopBtn");
+    const statusEl       = document.getElementById("status");
+    const logEl          = document.getElementById("log");
+    const boardGrid      = document.getElementById("boardGrid");
+    const fileLabels     = document.getElementById("fileLabels");
+    const turnIndicator  = document.getElementById("turnIndicator");
+    const turnText       = document.getElementById("turnText");
+
+    // ── Build board UI ───────────────────────────────────────
+    function buildStaticBoard() {
+      // file labels (a-h)
+      const files = ["a","b","c","d","e","f","g","h"];
+      const spacer = document.createElement("div");
+      spacer.style.width = "22px";
+      fileLabels.appendChild(spacer);
+      files.forEach(f => {
+        const d = document.createElement("div");
+        d.className = "file-label";
+        d.textContent = f;
+        fileLabels.appendChild(d);
+      });
+    }
+
+    function showBoardError(message) {
+      boardGrid.innerHTML = '<div class="board-error">' + message + '</div>';
+    }
+
+    function renderBoard() {
+      if (!game || typeof game.board !== "function") {
+        showBoardError("Chess.js not loaded. Check your browser console for errors.");
+        return;
+      }
+      boardGrid.innerHTML = "";
+      const b = game.board(); // 8x8 array, row 0 = rank 8
+
+      for (let r = 0; r < 8; r++) {
+        // rank label
+        const rankNum = 8 - r;
+
+        for (let c = 0; c < 8; c++) {
+          const sq = document.createElement("div");
+          const isLight = (r + c) % 2 === 0;
+          const sqName = "abcdefgh"[c] + rankNum; // e.g. "a8"
+
+          let cls = "sq " + (isLight ? "light" : "dark");
+          if (lastMove && (sqName === lastMove.from || sqName === lastMove.to)) {
+            cls = "sq " + (isLight ? "last-move-light" : "last-move-dark");
+          }
+          sq.className = cls;
+
+          const cell = b[r][c];
+          if (cell) {
+            const key = cell.color + cell.type.toUpperCase();
+            const span = document.createElement("span");
+            span.className = "piece";
+            span.textContent = PIECES[key] || "";
+            sq.appendChild(span);
+          }
+
+          // rank label on the leftmost column
+          if (c === 0) {
+            const lbl = document.createElement("div");
+            lbl.style.cssText = "position:absolute;left:2px;top:1px;font-size:0.6rem;color:#888;pointer-events:none;";
+            lbl.textContent = rankNum;
+            sq.appendChild(lbl);
+            sq.style.position = "relative";
+          }
+
+          boardGrid.appendChild(sq);
+        }
+      }
+    }
+
+    // ── Logging ──────────────────────────────────────────────
+    function log(text, cls) {
+      const span = document.createElement("span");
+      if (cls) span.className = cls;
+      span.textContent = text + "\n";
+      logEl.appendChild(span);
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    function clearLog() { logEl.innerHTML = ""; }
+
+    // ── Status / turn indicator ──────────────────────────────
+    function setStatus(msg) { statusEl.textContent = msg; }
+
+    function updateTurnIndicator() {
+      const isWhite = game.turn() === "w";
+      turnIndicator.querySelector(".dot").className = "dot " + (isWhite ? "white" : "black");
+      const model = isWhite ? MODEL_WHITE : MODEL_BLACK;
+      const color = isWhite ? "White" : "Black";
+      turnText.textContent = color + " to move (" + model + ")";
+    }
+
+    // ── OpenAI call ──────────────────────────────────────────
+    function moveToUCI(m) {
+      return m.from + m.to + (m.promotion || "");
+    }
+
+    function getLegalUCIMoves() {
+      return game.moves({ verbose: true }).map(moveToUCI);
+    }
+
+    function buildMessages(turnColor, options = {}) {
+      const moves = game.history();
+      const historyStr = moves.length ? moves.join(" ") : "(no moves yet)";
+      const fen = game.fen();
+      const legalMoves = getLegalUCIMoves();
+      const legalStr = legalMoves.join(", ");
+
+      let userContent =
+        "You are playing as " + (turnColor === "w" ? "WHITE" : "BLACK") + ".\n" +
+        "Current FEN: " + fen + "\n" +
+        "Moves played so far: " + historyStr + "\n";
+
+      if (game.in_check()) {
+        userContent += "You are IN CHECK. You must make a legal move that gets out of check.\n";
+      }
+
+      userContent +=
+        "\nLEGAL MOVES — you MUST pick exactly ONE from this list:\n" +
+        legalStr + "\n\n" +
+        "Reply with only the UCI move (e.g. e2e4). No other text.";
+
+      if (options.failedMove) {
+        userContent +=
+          "\n\nYour previous answer \"" + options.failedMove + "\" was illegal or not in the list. " +
+          "Pick a different move from LEGAL MOVES above.";
+      }
+
+      return [
+        {
+          role: "system",
+          content:
+            "You are playing a serious tournament chess game.\n\n" +
+            "Your objective is to find the strongest move available in the current position.\n\n" +
+            "For every turn:\n\n" +
+            "1. Carefully reconstruct the entire board position.\n" +
+            "2. Verify whose turn it is.\n" +
+            "3. Identify all checks, captures, and threats for both sides.\n" +
+            "4. Generate at least 5 candidate moves.\n" +
+            "5. For each candidate move:\n" +
+            "   - Evaluate tactical consequences.\n" +
+            "   - Check for hanging pieces.\n" +
+            "   - Check for checks, forks, pins, skewers, and discovered attacks.\n" +
+            "   - Verify move legality.\n" +
+            "6. Compare the candidate moves.\n" +
+            "7. Select the strongest legal move.\n" +
+            "8. Perform a final legality check.\n" +
+            "9. Verify your king is not left in check.\n" +
+            "10. Output only the chosen move in UCI notation (e.g. e2e4, e1g1, e7e8q).\n\n" +
+            "Never play a move until legality has been verified.\n" +
+            "Never assume a piece exists unless it is visible on the board.\n" +
+            "Accuracy is more important than speed."
+        },
+        { role: "user", content: userContent }
+      ];
+    }
+
+    function buildRequestBody(model, turnColor, options = {}) {
+      const body = {
+        model,
+        messages: buildMessages(turnColor, options)
+      };
+      if (model.startsWith("gpt-5")) {
+        // gpt-5 spends tokens on internal reasoning; need headroom + minimal effort
+        body.reasoning_effort = "minimal";
+        body.max_completion_tokens = 256;
+      } else {
+        body.temperature = 0.6;
+        body.max_completion_tokens = 16;
+      }
+      return body;
+    }
+
+    function extractMoveFromResponse(data) {
+      const choice = data.choices?.[0];
+      const content = (choice?.message?.content || "").trim();
+      const finish = choice?.finish_reason || "unknown";
+      const reasoning = data.usage?.completion_tokens_details?.reasoning_tokens;
+      return { content, finish, reasoning };
+    }
+
+    async function callOpenAI(apiKey, model, turnColor, options = {}) {
+      const res = await fetch(API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + apiKey
+        },
+        body: JSON.stringify(buildRequestBody(model, turnColor, options))
+      });
+
+      if (!res.ok) {
+        const txt = await res.text().catch(() => "");
+        throw new Error("HTTP " + res.status + ": " + txt.slice(0, 200));
+      }
+
+      const data = await res.json();
+      const { content, finish, reasoning } = extractMoveFromResponse(data);
+
+      if (!content) {
+        const detail = "finish=" + finish +
+          (reasoning != null ? ", reasoning_tokens=" + reasoning : "");
+        throw new Error("Empty response from model (" + detail + ")");
+      }
+
+      return content.split(/\s+/)[0];
+    }
+
+    function normalizeRawMove(raw) {
+      return raw.trim().replace(/[`"'<>]/g, "").replace(/[+#?!]+$/g, "").trim();
+    }
+
+    function extractSquares(raw) {
+      const s = raw.trim().toLowerCase();
+      // Handles: d8d5, d8xd5, d8-d5, d8:d5, d8 d5, d8->d5, e7e8q
+      const m = s.match(/([a-h][1-8])\s*(?:[x:\-–>]+\s*)?([a-h][1-8])\s*([qrbn])?/);
+      if (!m) return null;
+      return { from: m[1], to: m[2], promotion: m[3] || undefined };
+    }
+
+    function tryMoveFromSquares(from, to, promotion) {
+      const legal = game.moves({ verbose: true }).filter(m => m.from === from && m.to === to);
+      if (!legal.length) return null;
+
+      if (promotion) {
+        return game.move({ from, to, promotion }) || null;
+      }
+      if (legal.length === 1) {
+        return game.move({ from, to, promotion: legal[0].promotion }) || null;
+      }
+      // Multiple legal moves to same square (promotion) — default queen
+      return game.move({ from, to, promotion: "q" }) || null;
+    }
+
+    function tryApplyMove(raw) {
+      if (!raw) return null;
+      const cleaned = normalizeRawMove(raw);
+
+      // 1) Square-based formats (UCI + hybrids like d8xd5)
+      const sq = extractSquares(cleaned);
+      if (sq) {
+        const m = tryMoveFromSquares(sq.from, sq.to, sq.promotion);
+        if (m) return m;
+      }
+
+      // 2) Standard SAN (O-O, Nf3, Qxd5, exd5, etc.)
+      const san = cleaned
+        .replace(/0-0-0/gi, "O-O-O")
+        .replace(/0-0/gi, "O-O");
+      return game.move(san) || null;
+    }
+
+    // ── Main game loop ────────────────────────────────────────
+    async function playLoop(apiKey) {
+      while (running && !game.game_over()) {
+        const turn      = game.turn();
+        const model     = turn === "w" ? MODEL_WHITE : MODEL_BLACK;
+        const colorName = turn === "w" ? "White" : "Black";
+        const logCls    = turn === "w" ? "log-white" : "log-black";
+
+        updateTurnIndicator();
+        setStatus(colorName + " (" + model + ") is thinking...");
+        log("── " + colorName + " [" + model + "] ──", logCls);
+
+        let raw = "";
+        let moveObj = null;
+        let lastFailed = null;
+        const maxAttempts = 5;
+
+        for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+          try {
+            raw = await callOpenAI(apiKey, model, turn, { failedMove: lastFailed });
+            moveObj = tryApplyMove(raw);
+            if (moveObj) break;
+            lastFailed = raw;
+            log("Attempt " + attempt + ": illegal — " + JSON.stringify(raw) + " (not in legal moves)", "log-err");
+          } catch (err) {
+            log("Attempt " + attempt + ": " + err.message, "log-err");
+            if (attempt === maxAttempts) {
+              setStatus("API error. Stopped.");
+              running = false;
+              startBtn.disabled = false;
+              stopBtn.disabled = true;
+              return;
+            }
+          }
+          if (attempt < maxAttempts) {
+            await new Promise(r => setTimeout(r, 500));
+          }
+        }
+
+        log("Output: " + raw, logCls);
+
+        if (!moveObj) {
+          log("ERROR: could not apply move after " + maxAttempts + " tries: " + JSON.stringify(raw), "log-err");
+          setStatus("Model gave invalid move. Stopped.");
+          break;
+        }
+
+        lastMove = { from: moveObj.from, to: moveObj.to };
+        log("Played: " + moveObj.san, "log-ok");
+        renderBoard();
+
+        if (game.in_checkmate()) {
+          const winner = turn === "w" ? MODEL_WHITE : MODEL_BLACK;
+          log("★ CHECKMATE — " + colorName + " (" + winner + ") wins!", "log-ok");
+          setStatus("Checkmate! " + colorName + " wins.");
+          break;
+        }
+        if (game.in_draw() || game.in_stalemate() || game.in_threefold_repetition() || game.insufficient_material()) {
+          log("½-½ Draw.", "log-ok");
+          setStatus("Game drawn.");
+          break;
+        }
+
+        await new Promise(r => setTimeout(r, 700));
+      }
+
+      running = false;
+      startBtn.disabled = false;
+      stopBtn.disabled  = true;
+      if (game.game_over()) setStatus(statusEl.textContent || "Game over.");
+    }
+
+    // ── Button handlers ───────────────────────────────────────
+    function startGame() {
+      const key = apiKeyInput.value.trim();
+      if (!key) { alert("Please enter your OpenAI API key."); return; }
+
+      try {
+        game = new Chess();
+      } catch (e) {
+        log("ERROR: chess.js not available: " + (e && e.message ? e.message : String(e)), "log-err");
+        setStatus("Chess.js failed to load. Open browser console for details.");
+        showBoardError("Chess.js not loaded. You likely blocked the CDN script.");
+        return;
+      }
+      lastMove = null;
+      running  = true;
+
+      clearLog();
+      renderBoard();
+      updateTurnIndicator();
+      setStatus("Game started!");
+
+      startBtn.disabled = true;
+      stopBtn.disabled  = false;
+
+      playLoop(key);
+    }
+
+    function stopGame() {
+      running = false;
+      setStatus("Stopped by user.");
+      startBtn.disabled = false;
+      stopBtn.disabled  = true;
+      log("=== Stopped by user ===", "log-err");
+    }
+
+    startBtn.addEventListener("click", startGame);
+    stopBtn.addEventListener("click",  stopGame);
+
+    // ── Init ──────────────────────────────────────────────────
+    function waitForChess(timeoutMs = 12000) {
+      return new Promise((resolve, reject) => {
+        const start = Date.now();
+        const t = setInterval(() => {
+          const C = window.Chess;
+          if (typeof C === "function") {
+            clearInterval(t);
+            resolve(C);
+            return;
+          }
+          if (Date.now() - start > timeoutMs) {
+            clearInterval(t);
+            reject(new Error("Timed out waiting for chess.js (window.Chess)."));
+          }
+        }, 50);
+      });
+    }
+
+    buildStaticBoard();
+    (async () => {
+      try {
+        await waitForChess(12000);
+        game = new Chess();
+        renderBoard();
+        updateTurnIndicator();
+        setStatus("Ready. Paste API key and press Start.");
+      } catch (e) {
+        setStatus("Chess.js not loaded. Check browser console for the CDN import error.");
+        showBoardError("Chess.js not loaded. Check browser console for errors.");
+      }
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Chinchilla Scaling Law</title>
+<style>
+body{font-family:Arial;max-width:1000px;margin:auto;padding:30px;line-height:1.7}
+h1,h2{color:#1f2937}
+.box{background:#f5f5f5;padding:15px;border-radius:8px}
+pre{background:#1f2937;color:#f5f5f5;padding:15px;border-radius:8px;overflow-x:auto}
+</style>
+</head>
+<body>
+
+<h1>Chinchilla Scaling Law</h1>
+<p><strong>Category:</strong> AI → Models</p>
+
+<div class="box">
+<h2>Core Principle</h2>
+<p>For a fixed training compute budget, the best model performance comes from scaling parameters and training tokens together—not just making the model bigger.</p>
+</div>
+
+<h2>What is the Chinchilla Scaling Law?</h2>
+<p>Introduced by DeepMind in 2022, the Chinchilla Scaling Law showed that most large language models at the time were <strong>undertrained</strong>. They had too many parameters and were trained on too little data.</p>
+<p>The key finding: to train compute-optimally, the number of training tokens should grow <strong>in proportion to</strong> the number of parameters. A practical rule of thumb is roughly <strong>20 training tokens per parameter</strong>.</p>
+
+<h2>Relationship Between Parameters and Training Tokens</h2>
+<ul>
+<li><strong>Parameters:</strong> What the model learns and stores during training.</li>
+<li><strong>Training Tokens:</strong> The amount of text the model is trained on.</li>
+<li><strong>Balance:</strong> Both should scale together. Doubling parameters means you should roughly double the training data.</li>
+</ul>
+
+<h2>Why It Mattered</h2>
+<ul>
+<li>It corrected the "bigger is always better" assumption.</li>
+<li>It proved a smaller model trained on more data can beat a larger, undertrained one.</li>
+<li>Chinchilla (70B) outperformed Gopher (280B) despite being 4x smaller.</li>
+<li>It made training far more compute-efficient.</li>
+</ul>
+
+<h2>Why It Matters Less Today</h2>
+<ul>
+<li>Chinchilla optimizes for <strong>training</strong> compute, not <strong>inference</strong> cost. Today inference dominates total cost.</li>
+<li>Smaller models trained on far more tokens than "optimal" are cheaper to run and often preferred.</li>
+<li>Data quality, curation, and new architectures now matter more than hitting an exact token ratio.</li>
+</ul>
+
+<h2>Simple Diagram</h2>
+<pre>
+ 8B Parameters   ->   X Tokens
+16B Parameters   ->  2X Tokens
+32B Parameters   ->  4X Tokens
+</pre>
+<p>As parameters scale up, training tokens should scale up proportionally.</p>
+
+<h2>Modern Limitations &amp; Alternatives</h2>
+<p>Scaling parameters and data is no longer the only path to better performance. Modern techniques include:</p>
+<ul>
+<li><strong>Better Architectures:</strong> Mixture-of-Experts and improved attention designs.</li>
+<li><strong>Model Compression:</strong> Distillation into smaller, efficient models.</li>
+<li><strong>Quantization:</strong> Lower-precision weights for faster, cheaper inference.</li>
+<li><strong>Pruning:</strong> Removing redundant weights without losing much accuracy.</li>
+<li><strong>Inference-Time Scaling:</strong> Spending more compute at inference to improve answers.</li>
+<li><strong>RAG:</strong> Adding external knowledge instead of baking everything into parameters.</li>
+<li><strong>Reasoning Models:</strong> Thinking step-by-step before answering.</li>
+</ul>
+
+<h2>Practical Takeaway</h2>
+<p>Bigger models require more training data, but today there are many other ways to improve performance besides increasing parameters—better architectures, compression, quantization, pruning, inference-time scaling, RAG, and reasoning all play a role.</p>
+
+</body>
+</html>
