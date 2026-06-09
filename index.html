@@ -456,6 +456,91 @@ nav > a.active,
     cursor: pointer;
 }
 
+/* Section landing page */
+#section-view {
+    padding: 2.5rem 0 4rem;
+}
+
+.section-intro {
+    margin-bottom: 2.5rem;
+}
+
+.section-intro h1 {
+    font-family: "Instrument Serif", Georgia, serif;
+    font-size: clamp(2rem, 4vw, 2.75rem);
+    letter-spacing: -0.03em;
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+}
+
+.section-intro p {
+    color: var(--text-muted);
+    max-width: 42rem;
+    font-size: 1.05rem;
+}
+
+.group-block {
+    margin-bottom: 2.75rem;
+}
+
+.group-head {
+    margin-bottom: 1.1rem;
+}
+
+.group-head h2 {
+    font-size: 1.4rem;
+    letter-spacing: -0.02em;
+}
+
+.group-head p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    max-width: 36rem;
+}
+
+.article-card {
+    display: block;
+}
+
+.article-card h3 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6rem;
+    font-size: 1.02rem;
+    margin-bottom: 0.45rem;
+}
+
+.article-card .tag {
+    flex-shrink: 0;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 0.22rem 0.55rem;
+    border-radius: 999px;
+}
+
+.article-card p {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    line-height: 1.55;
+}
+
+.panel-more {
+    display: inline-block;
+    margin-top: 1rem;
+    color: var(--accent);
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.panel-more:hover {
+    color: var(--accent-hover);
+}
+
 /* Footer */
 footer {
     margin-top: 2rem;
@@ -523,15 +608,7 @@ footer {
             <div class="nav-item">
                 <a href="#" class="nav-trigger">AI</a>
                 <div class="submenu">
-                    <div class="submenu-item">
-                        <span class="submenu-trigger">LLM evaluation</span>
-                        <div class="submenu nested">
-                            <a href="#choose-right-llm" data-page="choose-right-llm">Choosing LLM</a>
-                            <a href="#chinchilla-scaling-law" data-page="chinchilla-scaling-law">Chinchilla Scaling Law</a>
-                            <a href="#llm-benchmarks" data-page="llm-benchmarks">LLM Benchmarks</a>
-                            <a href="#why-benchmarks-mislead" data-page="why-benchmarks-mislead">Why Benchmarks Can Mislead</a>
-                        </div>
-                    </div>
+                    <a href="#llm-evaluation" data-page="llm-evaluation">LLM Evaluation</a>
                 </div>
             </div>
             <a href="#">Engineering</a>
@@ -602,6 +679,7 @@ footer {
                     <li><a href="#llm-benchmarks" data-page="llm-benchmarks">LLM Benchmarks <span>Reference</span></a></li>
                     <li><a href="#why-benchmarks-mislead" data-page="why-benchmarks-mislead">Why Benchmarks Can Mislead <span>Article</span></a></li>
                 </ul>
+                <a class="panel-more" href="#llm-evaluation" data-page="llm-evaluation">Browse all LLM evaluation notes →</a>
             </div>
             <div class="panel">
                 <span class="panel-label">Recent</span>
@@ -614,6 +692,12 @@ footer {
             </div>
         </div>
     </section>
+    </div>
+
+    <div id="section-view" class="view-hidden">
+        <div class="container">
+            <div id="section-content"></div>
+        </div>
     </div>
 
     <div id="article-view" class="view-hidden">
@@ -637,44 +721,117 @@ footer {
 <script>
 const pages = {
     home: { type: "home" },
+    "llm-evaluation": {
+        type: "section",
+        title: "LLM Evaluation",
+        intro: "Notes on how to assess, compare, and choose large language models — from first principles to benchmarks and their pitfalls.",
+        groups: [
+            { name: "Fundamentals", desc: "Core concepts for understanding and selecting models." },
+            { name: "Benchmarks", desc: "The tests used to measure model capability." },
+            { name: "Pitfalls", desc: "Why scores can mislead, and what to watch for." }
+        ]
+    },
     "choose-right-llm": {
         type: "article",
         url: "AI/eval-model/choose_right_llm.html",
-        title: "Choosing the Right LLM"
+        title: "Choosing the Right LLM",
+        section: "llm-evaluation",
+        group: "Fundamentals",
+        tag: "Guide",
+        summary: "A practical process for picking the best model for your use case."
     },
     "chinchilla-scaling-law": {
         type: "article",
         url: "AI/eval-model/chinchilla_scaling_law.html",
-        title: "Chinchilla Scaling Law"
+        title: "Chinchilla Scaling Law",
+        section: "llm-evaluation",
+        group: "Fundamentals",
+        tag: "Concept",
+        summary: "Why parameters and training tokens should scale together — and why it matters less today."
     },
     "llm-benchmarks": {
         type: "article",
         url: "AI/eval-model/llm_benchmarks.html",
-        title: "Important LLM Benchmarks"
+        title: "Important LLM Benchmarks",
+        section: "llm-evaluation",
+        group: "Benchmarks",
+        tag: "Reference",
+        summary: "GPQA, MMLU-Pro, AIME, LiveCodeBench, MuSR, and HLE — what each one measures."
     },
     "why-benchmarks-mislead": {
         type: "article",
         url: "AI/eval-model/why_benchmarks_mislead.html",
-        title: "Why Benchmarks Can Mislead"
+        title: "Why Benchmarks Can Mislead",
+        section: "llm-evaluation",
+        group: "Pitfalls",
+        tag: "Article",
+        summary: "Contamination, narrow scope, saturation, overfitting, and evaluation awareness."
     }
 };
 
 const homeView = document.getElementById("home-view");
+const sectionView = document.getElementById("section-view");
+const sectionContent = document.getElementById("section-content");
 const articleView = document.getElementById("article-view");
 const articleContent = document.getElementById("article-content");
-const navLinks = document.querySelectorAll("[data-page]");
 
 function setActiveNav(pageId) {
-    navLinks.forEach((link) => {
+    document.querySelectorAll("[data-page]").forEach((link) => {
         link.classList.toggle("active", link.dataset.page === pageId);
     });
 }
 
 function showHome() {
     homeView.classList.remove("view-hidden");
+    sectionView.classList.add("view-hidden");
     articleView.classList.add("view-hidden");
     document.title = "Sumeet Kumar — Knowledge Base";
     setActiveNav("home");
+}
+
+function escapeHtml(value) {
+    return String(value).replace(/[&<>"]/g, (ch) =>
+        ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
+}
+
+function showSection(pageId) {
+    const section = pages[pageId];
+    homeView.classList.add("view-hidden");
+    articleView.classList.add("view-hidden");
+    sectionView.classList.remove("view-hidden");
+    document.title = `${section.title} — Sumeet Kumar`;
+    setActiveNav(pageId);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+
+    const articles = Object.entries(pages).filter(
+        ([, page]) => page.type === "article" && page.section === pageId
+    );
+
+    let html = `<div class="section-intro"><h1>${escapeHtml(section.title)}</h1>` +
+        `<p>${escapeHtml(section.intro)}</p></div>`;
+
+    for (const group of section.groups) {
+        const inGroup = articles.filter(([, page]) => page.group === group.name);
+        if (!inGroup.length) continue;
+
+        html += `<div class="group-block"><div class="group-head">` +
+            `<h2>${escapeHtml(group.name)}</h2>` +
+            (group.desc ? `<p>${escapeHtml(group.desc)}</p>` : "") +
+            `</div><div class="grid">`;
+
+        for (const [id, page] of inGroup) {
+            html += `<a class="card article-card" href="#${id}" data-page="${id}">` +
+                `<h3>${escapeHtml(page.title)}` +
+                (page.tag ? `<span class="tag">${escapeHtml(page.tag)}</span>` : "") +
+                `</h3>` +
+                (page.summary ? `<p>${escapeHtml(page.summary)}</p>` : "") +
+                `</a>`;
+        }
+
+        html += `</div></div>`;
+    }
+
+    sectionContent.innerHTML = html;
 }
 
 async function loadArticle(pageId) {
@@ -685,6 +842,7 @@ async function loadArticle(pageId) {
     }
 
     homeView.classList.add("view-hidden");
+    sectionView.classList.add("view-hidden");
     articleView.classList.remove("view-hidden");
     articleContent.innerHTML = '<p class="article-loading">Loading...</p>';
     document.title = `${page.title} — Sumeet Kumar`;
@@ -708,8 +866,13 @@ async function loadArticle(pageId) {
 }
 
 function navigate(pageId, updateHash = true) {
-    if (pageId === "home") {
+    const page = pages[pageId];
+
+    if (!page || page.type === "home") {
         showHome();
+        pageId = "home";
+    } else if (page.type === "section") {
+        showSection(pageId);
     } else {
         loadArticle(pageId);
     }
@@ -724,11 +887,11 @@ function handleRoute() {
     navigate(pageId, false);
 }
 
-navLinks.forEach((link) => {
-    link.addEventListener("click", (event) => {
-        event.preventDefault();
-        navigate(link.dataset.page);
-    });
+document.addEventListener("click", (event) => {
+    const link = event.target.closest("[data-page]");
+    if (!link) return;
+    event.preventDefault();
+    navigate(link.dataset.page);
 });
 
 window.addEventListener("hashchange", handleRoute);
