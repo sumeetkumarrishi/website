@@ -500,6 +500,44 @@ nav > a.active,
     color: var(--text-soft);
 }
 
+.article-content pre {
+    background: #0b1220;
+    color: #e6edf3;
+    padding: 1rem 1.15rem;
+    border-radius: var(--radius-sm);
+    overflow-x: auto;
+    line-height: 1.5;
+    margin: 1.25rem 0;
+    font-size: 0.9rem;
+}
+
+.article-content code {
+    background: #f1f5f9;
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+
+.article-content pre code {
+    background: transparent;
+    padding: 0;
+}
+
+.article-content blockquote {
+    margin: 1rem 0;
+    padding: 0.6rem 1rem;
+    border-left: 3px solid var(--accent);
+    background: #f8faff;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+.article-content hr {
+    border: 0;
+    border-top: 1px solid var(--border);
+    margin: 2rem 0;
+}
+
 .article-loading,
 .article-error {
     color: var(--text-muted);
@@ -664,6 +702,7 @@ footer {
                 <a href="#" class="nav-trigger">AI</a>
                 <div class="submenu">
                     <a href="#llm-evaluation" data-page="llm-evaluation">LLM Evaluation</a>
+                    <a href="#rag" data-page="rag">RAG</a>
                 </div>
             </div>
             <a href="#">Engineering</a>
@@ -821,6 +860,23 @@ const pages = {
         group: "Pitfalls",
         tag: "Article",
         summary: "Contamination, narrow scope, saturation, overfitting, and evaluation awareness."
+    },
+    "rag": {
+        type: "section",
+        title: "RAG",
+        intro: "Retrieval Augmented Generation — combining external knowledge retrieval with LLM text generation to produce current, grounded answers.",
+        groups: [
+            { name: "Fundamentals", desc: "Core concepts behind retrieval-augmented generation." }
+        ]
+    },
+    "understanding-rag": {
+        type: "article",
+        url: "AI/rag/understanding_rag.html",
+        title: "Understanding Retrieval Augmented Generation (RAG)",
+        section: "rag",
+        group: "Fundamentals",
+        tag: "Guide",
+        summary: "What RAG is, why it matters, how it works, and a simple implementation."
     }
 };
 

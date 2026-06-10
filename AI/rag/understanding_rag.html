@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Understanding Retrieval Augmented Generation (RAG)</title>
+<style>
+body{font-family:Arial;max-width:1000px;margin:auto;padding:30px;line-height:1.7;color:#0b1220}
+h1,h2,h3{color:#1f2937}
+h2{margin-top:2rem;border-bottom:1px solid #e5e7eb;padding-bottom:0.4rem}
+.box{background:#f8faff;border:1px solid #e5e7eb;padding:15px 18px;border-radius:10px}
+pre{background:#0b1220;color:#e6edf3;padding:16px 18px;border-radius:10px;overflow-x:auto;line-height:1.5}
+blockquote{margin:1rem 0;padding:0.6rem 1rem;border-left:3px solid #2563eb;background:#f8faff;color:#374151;font-style:italic}
+code{background:#f1f5f9;padding:1px 5px;border-radius:4px;font-size:0.9em}
+hr{border:0;border-top:1px solid #e5e7eb;margin:2rem 0}
+</style>
+</head>
+<body>
+
+<h1>Understanding Retrieval Augmented Generation (RAG)</h1>
+<p><strong>Category:</strong> AI → RAG</p>
+
+<div class="box">
+<h2>Introduction</h2>
+<p>Large Language Models (LLMs) possess vast amounts of knowledge learned during training. However, they have limitations. Their knowledge may be outdated, they may not be aware of company-specific information, and retraining them whenever new information becomes available is expensive and time-consuming.</p>
+<p>Retrieval Augmented Generation (RAG) solves this problem by combining information retrieval with language generation. Instead of relying solely on what the model learned during training, relevant information is retrieved from an external knowledge source and provided to the model when a question is asked.</p>
+</div>
+
+<h2>What is RAG?</h2>
+<p>RAG stands for <strong>Retrieval Augmented Generation</strong>.</p>
+<p>It is a technique that enhances an LLM's responses by supplying relevant information from an external knowledge base before generating an answer.</p>
+<p>The idea is simple:</p>
+<ol>
+<li>A user asks a question.</li>
+<li>Relevant information is retrieved from a knowledge source.</li>
+<li>The retrieved information is added to the prompt.</li>
+<li>The LLM generates an answer using both the retrieved information and its existing knowledge.</li>
+</ol>
+<p>This allows the model to answer questions using information it was never explicitly trained on.</p>
+
+<h2>Why RAG is Important</h2>
+<p>Modern LLMs are powerful, but they face several challenges:</p>
+<ul>
+<li>Knowledge becomes outdated after training.</li>
+<li>Company-specific information is not available in public training data.</li>
+<li>Models may hallucinate facts when they lack information.</li>
+<li>Retraining a model whenever information changes is impractical.</li>
+</ul>
+<p>RAG addresses these challenges by giving the model access to current and domain-specific information at runtime.</p>
+
+<h2>The Core Idea</h2>
+<p>Many techniques used with LLMs improve performance by providing additional context.</p>
+<p>Examples include:</p>
+<ul>
+<li>Few-shot prompting</li>
+<li>Tool usage</li>
+<li>System instructions</li>
+<li>Context injection</li>
+</ul>
+<p>RAG extends this concept by automatically finding and supplying relevant information from a knowledge source.</p>
+<p>The more relevant context provided to the model, the more accurate and useful its responses can become.</p>
+
+<h2>How RAG Works</h2>
+<p>A typical RAG workflow looks like this:</p>
+<pre>
+User Question
+      &darr;
+Retrieve Relevant Information
+      &darr;
+Add Information to Prompt
+      &darr;
+Send Prompt to LLM
+      &darr;
+Generate Response
+</pre>
+<p>The retrieval step happens before the model generates an answer.</p>
+<p>Instead of asking the model to rely entirely on memory, we first provide it with the information needed to answer the question.</p>
+
+<h2>Knowledge Bases</h2>
+<p>A knowledge base is a repository of information that can be searched and retrieved.</p>
+<p>Examples include:</p>
+<ul>
+<li>Company documentation</li>
+<li>Product catalogs</li>
+<li>Internal wikis</li>
+<li>Policy documents</li>
+<li>Databases</li>
+<li>SharePoint repositories</li>
+<li>PDFs and reports</li>
+</ul>
+<p>The knowledge base serves as the source of truth, while the LLM serves as the reasoning and language generation layer.</p>
+
+<h2>Example: Travel Assistant</h2>
+<p>Imagine a travel company storing information about:</p>
+<ul>
+<li>Ticket prices</li>
+<li>Destinations</li>
+<li>Flight schedules</li>
+<li>Local activities</li>
+</ul>
+<p>A user asks:</p>
+<blockquote>What is the ticket price to London?</blockquote>
+<p>The application searches the knowledge base for information related to London and retrieves relevant records.</p>
+<p>That information is added to the prompt before sending it to the LLM.</p>
+<p>The model then generates an answer using the retrieved data, making it appear knowledgeable about the company's latest travel information.</p>
+
+<h2>A Simple RAG Implementation</h2>
+<p>Consider an insurance company with documents describing products and employees.</p>
+<p>A very basic implementation might work as follows:</p>
+<ul>
+<li>Scan all company documents.</li>
+<li>Identify product names and employee names.</li>
+<li>When a user asks a question, check whether any known names appear in the query.</li>
+<li>If a match is found, retrieve the associated document.</li>
+<li>Add the document contents to the prompt.</li>
+<li>Allow the LLM to generate an answer.</li>
+</ul>
+<p>While this approach is simplistic and not suitable for large-scale systems, it demonstrates the fundamental principle behind RAG: retrieve information first, then generate the response.</p>
+
+<h2>Key Takeaways</h2>
+<ul>
+<li>RAG stands for Retrieval Augmented Generation.</li>
+<li>It combines information retrieval with LLM-based text generation.</li>
+<li>Relevant information is retrieved before the model generates an answer.</li>
+<li>The retrieved information is included as context in the prompt.</li>
+<li>RAG helps reduce hallucinations and enables access to current and domain-specific knowledge.</li>
+<li>Knowledge bases can contain documents, databases, policies, manuals, and other sources of information.</li>
+<li>The fundamental idea behind RAG is simple: provide the model with the information it needs before asking it to answer.</li>
+</ul>
+
+</body>
+</html>
