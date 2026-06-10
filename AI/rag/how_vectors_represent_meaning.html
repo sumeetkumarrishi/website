@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>How Do Vectors Represent Meaning?</title>
+<style>
+body{font-family:Arial;max-width:1000px;margin:auto;padding:30px;line-height:1.7;color:#0b1220}
+h1,h2,h3{color:#1f2937}
+h2{margin-top:2rem;border-bottom:1px solid #e5e7eb;padding-bottom:0.4rem}
+.box{background:#f8faff;border:1px solid #e5e7eb;padding:15px 18px;border-radius:10px}
+pre{background:#0b1220;color:#e6edf3;padding:16px 18px;border-radius:10px;overflow-x:auto;line-height:1.5}
+blockquote{margin:1rem 0;padding:0.6rem 1rem;border-left:3px solid #2563eb;background:#f8faff;color:#374151;font-style:italic}
+code{background:#f1f5f9;padding:1px 5px;border-radius:4px;font-size:0.9em}
+hr{border:0;border-top:1px solid #e5e7eb;margin:2rem 0}
+</style>
+</head>
+<body>
+
+<h1>How Do Vectors Represent Meaning?</h1>
+<p><strong>Category:</strong> AI → RAG</p>
+
+<div class="box">
+<h2>Introduction</h2>
+<p>When working with embeddings, one of the first questions people ask is:</p>
+<blockquote>How can a list of numbers represent the meaning of text?</blockquote>
+<p>At first glance, it seems impossible. How can something like:</p>
+<pre>[0.12, -0.45, 0.88, ...]</pre>
+<p>capture the meaning of a sentence, a document, or even a person's career?</p>
+<p>The answer lies in how embedding models organize information in a mathematical space where similar meanings are placed close together.</p>
+</div>
+
+<h2>Beyond Words and Sentences</h2>
+<p>Embeddings are not limited to individual words. Modern embedding models can represent:</p>
+<ul>
+<li>Characters</li>
+<li>Tokens</li>
+<li>Words</li>
+<li>Sentences</li>
+<li>Paragraphs</li>
+<li>Documents</li>
+<li>Job descriptions</li>
+<li>Products</li>
+<li>User profiles</li>
+<li>Career histories</li>
+</ul>
+<p>Anything that contains information can potentially be represented as a vector. For example:</p>
+<ul>
+<li>A document can be represented by a vector.</li>
+<li>A product listing can be represented by a vector.</li>
+<li>A person's professional experience can be represented by a vector.</li>
+</ul>
+<p>The vector acts as a numerical summary of the meaning contained within that information.</p>
+
+<h2>Vectors as Points in Space</h2>
+<p>A vector can be thought of as a point in space. For a simple three-dimensional vector:</p>
+<pre>[2, 5, 8]</pre>
+<p>the numbers represent:</p>
+<pre>X = 2
+Y = 5
+Z = 8</pre>
+<p>This places the vector at a specific location in three-dimensional space.</p>
+<p>Modern embedding models work the same way, except instead of three dimensions they may use:</p>
+<ul>
+<li>384 dimensions</li>
+<li>768 dimensions</li>
+<li>1536 dimensions</li>
+<li>3072 dimensions</li>
+</ul>
+<p>Rather than a point in 3D space, an embedding becomes a point in a high-dimensional mathematical space.</p>
+<p>Although humans cannot visualize thousands of dimensions, computers can efficiently calculate distances between points in these spaces.</p>
+
+<h2>Similar Meanings Live Close Together</h2>
+<p>The most important property of embeddings is:</p>
+<blockquote>Similar meanings produce vectors that are close together.</blockquote>
+<p>Consider the following questions:</p>
+<pre>What are the ticket prices from New York to London?
+
+What is the price of a flight from JFK to Heathrow?</pre>
+<p>The wording is different. The exact words are different. However, the meaning is nearly identical.</p>
+<p>An embedding model converts both sentences into vectors that occupy nearby positions in vector space.</p>
+<pre>Sentence A &rarr; Vector A
+Sentence B &rarr; Vector B</pre>
+<p>Because the meanings are similar:</p>
+<pre>Vector A &asymp; Vector B</pre>
+<p>This property allows computers to search and compare information based on meaning rather than exact keywords.</p>
+
+<h2>The Discovery That Changed NLP</h2>
+<p>One of the most important discoveries in Natural Language Processing came from a technique called <strong>Word2Vec</strong>.</p>
+<p>Word2Vec was an early embedding system that converted individual words into vectors. Each word occupied a position within vector space. For example:</p>
+<pre>King
+Queen
+Prince
+Emperor</pre>
+<p>would naturally appear close to one another because they share related meanings. Similarly:</p>
+<pre>Apple
+Orange
+Banana
+Mango</pre>
+<p>would form another cluster representing fruit.</p>
+<p>The surprising discovery was that these vectors captured relationships between concepts.</p>
+
+<h2>Vector Arithmetic</h2>
+<p>Researchers found that mathematical operations on vectors often produced meaningful results. A famous example is:</p>
+<pre>King - Man + Woman = Queen</pre>
+<p>Conceptually:</p>
+<ol>
+<li>Start with the meaning of "King".</li>
+<li>Remove the concept of "Man".</li>
+<li>Add the concept of "Woman".</li>
+</ol>
+<p>The resulting vector ends up near the vector representing "Queen".</p>
+<p>This was remarkable because nobody explicitly programmed this rule into the system. The relationships emerged naturally during training.</p>
+
+<h2>Another Example</h2>
+<p>The same idea can be applied to locations.</p>
+<pre>Paris - France + England = London</pre>
+<p>The embedding captures relationships between:</p>
+<ul>
+<li>Capitals</li>
+<li>Countries</li>
+<li>Geographic concepts</li>
+</ul>
+<p>Again, the result emerges from how meanings are organized within vector space.</p>
+
+<h2>Meaning Instead of Words</h2>
+<p>The most important insight is that embeddings do not primarily represent words. They represent meaning.</p>
+<p>Consider these two sentences:</p>
+<pre>I want to buy a new laptop.
+
+I need a computer for work.</pre>
+<p>The wording differs significantly. However, both sentences express related intentions.</p>
+<p>An embedding model focuses less on the exact words and more on the underlying concepts. As a result, their vectors will be closer together than completely unrelated sentences.</p>
+
+<h2>Modern Embeddings</h2>
+<p>Word2Vec worked with individual words. Modern embedding models are far more powerful. They can generate embeddings for:</p>
+<ul>
+<li>Sentences</li>
+<li>Paragraphs</li>
+<li>Entire documents</li>
+</ul>
+<p>For example:</p>
+<pre>A product description       &rarr; a single vector
+A research paper            &rarr; a single vector
+A customer support chat     &rarr; a single vector</pre>
+<p>This allows modern AI systems to compare and retrieve information at much larger scales.</p>
+
+<h2>Measuring Similarity</h2>
+<p>When comparing vectors, we need a way to determine how similar they are. The most common technique is called <strong>Cosine Similarity</strong>.</p>
+<p>Cosine similarity measures how closely two vectors point in the same direction.</p>
+<p>Higher similarity means:</p>
+<ul>
+<li>Similar meanings</li>
+<li>Related concepts</li>
+<li>Relevant information</li>
+</ul>
+<p>Lower similarity means:</p>
+<ul>
+<li>Different topics</li>
+<li>Unrelated concepts</li>
+</ul>
+<p>Most vector databases use cosine similarity or closely related techniques to identify relevant information.</p>
+
+<h2>Why This Matters for RAG</h2>
+<p>Retrieval Augmented Generation depends on finding information that is semantically related to a user's question.</p>
+<p>Suppose a user asks:</p>
+<pre>How can I learn Python?</pre>
+<p>The system converts the question into a vector. It then compares that vector against thousands of document vectors. Documents discussing:</p>
+<ul>
+<li>Python tutorials</li>
+<li>Python courses</li>
+<li>Python programming guides</li>
+</ul>
+<p>will have vectors close to the question vector. Those documents are retrieved and supplied to the LLM as context.</p>
+<p>This process allows RAG systems to find relevant information even when the wording differs completely.</p>
+
+<h2>Key Takeaways</h2>
+<ul>
+<li>Embeddings represent meaning using vectors.</li>
+<li>A vector can be viewed as a point in a high-dimensional space.</li>
+<li>Similar meanings produce vectors that are close together.</li>
+<li>Embedding models focus on semantic meaning rather than exact wording.</li>
+<li>Word2Vec demonstrated that vector arithmetic can capture meaningful relationships between concepts.</li>
+<li>Modern embedding models work with sentences, paragraphs, and entire documents.</li>
+<li>Cosine similarity is commonly used to measure how close two vectors are.</li>
+<li>The ability to compare meaning mathematically is the foundation of semantic search, vector databases, and RAG systems.</li>
+</ul>
+
+</body>
+</html>
