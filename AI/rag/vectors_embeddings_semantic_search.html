@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Vectors, Embeddings, and Semantic Search</title>
+<style>
+body{font-family:Arial;max-width:1000px;margin:auto;padding:30px;line-height:1.7;color:#0b1220}
+h1,h2,h3{color:#1f2937}
+h2{margin-top:2rem;border-bottom:1px solid #e5e7eb;padding-bottom:0.4rem}
+.box{background:#f8faff;border:1px solid #e5e7eb;padding:15px 18px;border-radius:10px}
+pre{background:#0b1220;color:#e6edf3;padding:16px 18px;border-radius:10px;overflow-x:auto;line-height:1.5}
+blockquote{margin:1rem 0;padding:0.6rem 1rem;border-left:3px solid #2563eb;background:#f8faff;color:#374151;font-style:italic}
+code{background:#f1f5f9;padding:1px 5px;border-radius:4px;font-size:0.9em}
+hr{border:0;border-top:1px solid #e5e7eb;margin:2rem 0}
+</style>
+</head>
+<body>
+
+<h1>Vectors, Embeddings, and Semantic Search</h1>
+<p><strong>Category:</strong> AI → RAG</p>
+
+<div class="box">
+<h2>Introduction</h2>
+<p>One of the most important concepts in modern AI systems is the idea of <strong>embeddings</strong> and <strong>vectors</strong>. These concepts form the foundation of semantic search, vector databases, and Retrieval Augmented Generation (RAG).</p>
+<p>At first glance, vectors may seem like a complex mathematical concept. In reality, they are simply a way of representing the meaning of text using numbers.</p>
+<p>Understanding vectors is the key to understanding how modern AI systems search for information based on meaning rather than exact keywords.</p>
+</div>
+
+<h2>Two Types of Language Models</h2>
+<p>Modern AI systems typically use two different kinds of models.</p>
+
+<h3>Autoregressive Models</h3>
+<p>These are the models most people interact with directly. Examples include:</p>
+<ul>
+<li>GPT</li>
+<li>Claude</li>
+<li>Gemini</li>
+<li>DeepSeek</li>
+</ul>
+<p>Their primary job is to generate text. Given a sequence of words, they predict the next token. For example:</p>
+<pre>The capital of France is</pre>
+<p>The model predicts:</p>
+<pre>Paris</pre>
+<p>It then continues predicting one token at a time until a complete response is generated.</p>
+<p>This process powers chatbots, assistants, code generation tools, and most conversational AI systems.</p>
+
+<h3>Embedding Models</h3>
+<p>Embedding models serve a completely different purpose. Instead of generating text, they analyze the input and produce a numerical representation of its meaning. For example:</p>
+<pre>How do I learn Python?</pre>
+<p>might become:</p>
+<pre>[0.12, -0.45, 0.88, 0.31, ...]</pre>
+<p>This collection of numbers is known as an <strong>embedding vector</strong>.</p>
+<p>The goal of an embedding model is not to answer the question, but to capture the meaning of the text in a form that computers can compare efficiently.</p>
+
+<h2>What is a Vector?</h2>
+<p>A vector is simply a list of numbers. Examples:</p>
+<pre>[4, 2, 7]
+
+[0.12, -0.45, 0.88]</pre>
+<p>Modern embedding models typically generate vectors containing hundreds or thousands of values. Examples include:</p>
+<ul>
+<li>384 dimensions</li>
+<li>768 dimensions</li>
+<li>1024 dimensions</li>
+<li>1536 dimensions</li>
+<li>3072 dimensions</li>
+</ul>
+<p>Each number contributes to a mathematical representation of the text's meaning.</p>
+
+<h2>How Meaning Becomes Numbers</h2>
+<p>Consider the following sentences:</p>
+<pre>How do I learn Python?
+
+Best way to study Python programming</pre>
+<p>Although the wording is different, the meaning is very similar.</p>
+<p>When processed by an embedding model, both sentences produce vectors that are close together in mathematical space. For example:</p>
+<pre>How do I learn Python?
+&rarr; [0.12, -0.45, 0.88, ...]
+
+Best way to study Python programming
+&rarr; [0.11, -0.48, 0.86, ...]</pre>
+<p>The exact values are not important. What matters is that similar meanings produce similar vectors.</p>
+
+<h2>Why Vectors Matter</h2>
+<p>Traditional search systems rely on matching keywords. For example:</p>
+<pre>Python learning
+
+Study Python programming</pre>
+<p>contain different words. A keyword search may struggle to recognize that they are asking about the same topic.</p>
+<p>Embedding models solve this problem by converting both phrases into vectors and comparing their meanings.</p>
+<ul>
+<li>If two vectors are close together, the meanings are likely similar.</li>
+<li>If two vectors are far apart, the meanings are likely different.</li>
+</ul>
+<p>This allows AI systems to search by meaning instead of searching by exact words.</p>
+
+<h2>Semantic Search</h2>
+<p>Searching by meaning is known as <strong>semantic search</strong>.</p>
+<p>Instead of asking:</p>
+<blockquote>Do these documents contain the same keywords?</blockquote>
+<p>semantic search asks:</p>
+<blockquote>Do these documents mean similar things?</blockquote>
+<p>This produces much better search results, especially when users use different wording than the original documents.</p>
+<p>For example, a document might contain:</p>
+<pre>Python programming tutorial</pre>
+<p>A user might search for:</p>
+<pre>How can I learn Python?</pre>
+<p>Even though the words differ, semantic search can identify that both are discussing the same topic.</p>
+
+<h2>Vectors and RAG</h2>
+<p>Vectors are the foundation of modern RAG systems.</p>
+<p>Imagine a company has 10,000 documents. Each document is processed through an embedding model and converted into a vector.</p>
+<pre>Document A &rarr; Vector A
+Document B &rarr; Vector B
+Document C &rarr; Vector C</pre>
+<p>Now a user asks:</p>
+<pre>How do I study Python?</pre>
+<p>The question is also converted into a vector.</p>
+<pre>Question &rarr; Vector Q</pre>
+<p>The system then compares Vector Q against all document vectors. The documents with vectors closest to the question are considered the most relevant.</p>
+<p>These documents are retrieved and supplied to the LLM as context. This allows the model to answer using information that is relevant to the user's intent, even when the exact wording differs.</p>
+
+<h2>Tokens vs Vectors</h2>
+<p>A common source of confusion is the difference between tokens and vectors.</p>
+
+<h3>Tokens</h3>
+<p>Tokens are simply pieces of text represented as IDs. For example:</p>
+<pre>I love Python</pre>
+<p>might become:</p>
+<pre>[25, 981, 4521]</pre>
+<p>These numbers are identifiers used by the model. They do not directly represent meaning.</p>
+
+<h3>Vectors</h3>
+<p>After the text has been processed by an embedding model, it becomes:</p>
+<pre>[0.12, -0.45, 0.88, ...]</pre>
+<p>This vector contains semantic information. It represents the meaning of the text rather than the words themselves.</p>
+<p>The process looks like this:</p>
+<pre>Text
+ &darr;
+Tokens
+ &darr;
+Embedding Model
+ &darr;
+Vector</pre>
+<p>Tokens are the input representation. Vectors are the meaning representation.</p>
+
+<h2>The Foundation of Modern Retrieval</h2>
+<p>The key insight behind embeddings is simple:</p>
+<blockquote>Texts with similar meanings produce similar vectors.</blockquote>
+<p>Because of this property, computers can compare vectors mathematically and identify related information. This capability enables:</p>
+<ul>
+<li>Semantic Search</li>
+<li>Vector Databases</li>
+<li>Retrieval Augmented Generation (RAG)</li>
+<li>Document Retrieval Systems</li>
+<li>Enterprise Knowledge Search</li>
+<li>AI-Powered Search Engines</li>
+</ul>
+<p>Nearly every modern retrieval system is built upon this idea.</p>
+
+<h2>Key Takeaways</h2>
+<ul>
+<li>Autoregressive models generate text by predicting the next token.</li>
+<li>Embedding models convert text into numerical representations called vectors.</li>
+<li>A vector is simply a list of numbers.</li>
+<li>Similar meanings produce similar vectors.</li>
+<li>Semantic search compares vectors rather than keywords.</li>
+<li>Vector search allows systems to retrieve relevant information even when wording differs.</li>
+<li>Modern RAG systems use embeddings and vector search to find relevant documents before generating answers.</li>
+<li>The foundation of semantic retrieval is the idea that similar meanings occupy nearby positions in vector space.</li>
+</ul>
+
+</body>
+</html>
