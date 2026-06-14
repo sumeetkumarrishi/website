@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Understanding Parameters, Dimensions, Embeddings, and Architecture</title>
+<style>
+body{font-family:Arial;max-width:1000px;margin:auto;padding:30px;line-height:1.7;color:#0b1220}
+h1,h2,h3{color:#1f2937}
+h2{margin-top:2rem;border-bottom:1px solid #e5e7eb;padding-bottom:0.4rem}
+.box{background:#f8faff;border:1px solid #e5e7eb;padding:15px 18px;border-radius:10px}
+pre{background:#0b1220;color:#e6edf3;padding:16px 18px;border-radius:10px;overflow-x:auto;line-height:1.5}
+blockquote{margin:1rem 0;padding:0.6rem 1rem;border-left:3px solid #2563eb;background:#f8faff;color:#374151;font-style:italic}
+code{background:#f1f5f9;padding:1px 5px;border-radius:4px;font-size:0.9em}
+hr{border:0;border-top:1px solid #e5e7eb;margin:2rem 0}
+</style>
+</head>
+<body>
+
+<h1>Understanding Parameters, Dimensions, Embeddings, and Architecture in Large Language Models</h1>
+<p><strong>Category:</strong> AI → LLM Basics</p>
+
+<div class="box">
+<h2>Introduction</h2>
+<p>When people first start learning about Large Language Models (LLMs), they often encounter terms such as parameters, dimensions, embeddings, and transformers. These terms are related, but they represent different concepts.</p>
+<p>This article explains these concepts from first principles and shows how they work together inside an LLM.</p>
+</div>
+
+<h2>What is a Parameter?</h2>
+<p>A parameter is a learned numerical value inside a neural network.</p>
+<p>Think of a parameter as a small adjustable knob that influences the behavior of the model.</p>
+<p>Example:</p>
+<pre>0.734    -1.221    2.448</pre>
+<p>When people say a model has 8 billion parameters, they mean the model contains approximately 8,000,000,000 learned numbers.</p>
+<p>A parameter is not a fact or a property. Instead, parameters are numerical settings that collectively enable the model to learn and represent knowledge.</p>
+
+<h2>Are Parameters Created During Learning?</h2>
+<p>No.</p>
+<p>Parameters exist before training begins. The architecture creates parameter slots first, and training learns the values stored in those slots.</p>
+<pre>Architecture &rarr; Creates parameter slots &rarr; Training &rarr; Learns parameter values</pre>
+
+<h2>What Does a Parameter Correspond To?</h2>
+<p>A parameter usually corresponds to the strength of a mathematical relationship or transformation inside the network. Examples:</p>
+<ul>
+<li>How strongly one dimension influences another</li>
+<li>How strongly one pattern activates another</li>
+<li>How much one token should pay attention to another</li>
+</ul>
+<p>A parameter does not directly correspond to concepts such as Dog, Paris, Barking, or JavaScript.</p>
+
+<h2>Why a Single Parameter Has No Meaning</h2>
+<p>A single parameter value like <code>0.734</code> means almost nothing by itself.</p>
+<p>Meaning emerges from patterns across billions of parameters, much like a color emerges from the combination of RGB values.</p>
+<blockquote>Knowledge is not stored in individual parameters. It emerges from patterns across many parameters.</blockquote>
+
+<h2>What is a Dimension?</h2>
+<p>A dimension is one coordinate in a vector. Example:</p>
+<pre>[0.8, -0.3, 1.2, 0.7]</pre>
+<p>This vector has 4 dimensions.</p>
+<p>Modern LLMs commonly use vectors containing thousands of dimensions such as 4096, 8192, or 12288.</p>
+
+<h2>Parameters vs Dimensions</h2>
+<p>Dimensions define the size of the representation space. Parameters are the learned numerical values used to transform vectors.</p>
+<pre>Dimensions = Coordinates in the space
+Parameters = Learned transformations between coordinates</pre>
+
+<h2>What is an Embedding?</h2>
+<p>When the word "dog" enters a model, it is converted into a vector:</p>
+<pre>Dog = [0.8, -0.3, 1.2, 0.7]</pre>
+<p>This vector is called an embedding.</p>
+<p>An embedding is the model's numerical representation of a concept.</p>
+
+<h2>The RGB Analogy</h2>
+<p>RGB values:</p>
+<pre>[255, 0, 0]</pre>
+<p>represent the color red.</p>
+<p>No single value means "red". The combination of values creates the color.</p>
+<p>Similarly, no single embedding dimension means "fur", "tail", or "barks". Meaning emerges from the pattern of values.</p>
+
+<h2>Do Embedding Dimensions Have Names Like RGB?</h2>
+<p>For RGB:</p>
+<pre>Dimension 1 = Red
+Dimension 2 = Green
+Dimension 3 = Blue</pre>
+<p>For embeddings:</p>
+<pre>Dimension 1 = ?
+Dimension 2 = ?
+Dimension 3 = ?</pre>
+<p>Most of the time, nobody knows. The model learns these dimensions automatically during training.</p>
+
+<h2>Latent Features</h2>
+<p>Researchers often call embedding dimensions latent features or latent variables. Latent means hidden and not directly observable.</p>
+<p>Some dimensions may partially correlate with concepts such as sentiment, geography, grammar, or programming, but their meanings are usually not cleanly separated.</p>
+
+<h2>Distributed Representation</h2>
+<p>Modern neural networks use distributed representations. Instead of:</p>
+<pre>Dimension 1 = Animal
+Dimension 2 = Fur
+Dimension 3 = Bark</pre>
+<p>A concept is represented by patterns spread across many dimensions.</p>
+<blockquote>Meaning is distributed rather than stored in one location.</blockquote>
+
+<h2>Where is Knowledge Stored?</h2>
+<p>Knowledge is distributed across many dimensions and many parameters. The model does not store:</p>
+<pre>Dog: Barks = True</pre>
+<p>Instead, relationships between concepts such as dog, bark, pet, and animal are encoded as patterns in vectors and parameters.</p>
+
+<h2>What Happens When You Type a Word?</h2>
+<pre>dog
+ &rarr; Token ID
+ &rarr; Embedding Vector
+ &rarr; Transformer Layers
+ &rarr; Probability Calculation
+ &rarr; Next Token Prediction</pre>
+<p>The model's primary job is to predict the next token.</p>
+
+<h2>Why Aren't Embeddings Enough?</h2>
+<p>Embeddings represent concepts. Transformer layers learn how concepts interact. Examples:</p>
+<ul>
+<li>Dog + Bark</li>
+<li>Dog + Pet</li>
+<li>Paris + France</li>
+<li>JavaScript + Loop</li>
+</ul>
+<p>Without transformer layers, the model could represent concepts but would struggle to reason about them.</p>
+
+<h2>Vectors and Matrices</h2>
+<p>Vector:</p>
+<pre>[1, 2, 3]</pre>
+<p>Matrix:</p>
+<pre>[ [1, 2, 3],
+  [4, 5, 6] ]</pre>
+<p>A matrix can be thought of as an array of vectors.</p>
+
+<h2>How LLMs Use Matrices</h2>
+<p>A single word becomes a vector. A sentence becomes a matrix made up of multiple vectors.</p>
+<p>Transformers process these matrices using large matrix multiplications, which is why GPUs are highly effective for AI workloads.</p>
+
+<h2>Relationship Between Dimensions and Parameters</h2>
+<p>Dimensions and parameters are related but not the same thing. Example:</p>
+<pre>4096 dimensions</pre>
+<p>may require a matrix:</p>
+<pre>4096 x 4096</pre>
+<p>which contains:</p>
+<pre>16,777,216 parameters</pre>
+<p>More dimensions generally lead to more parameters. However:</p>
+<pre>Parameter Count != Dimension Count</pre>
+
+<h2>Can You Determine Dimensions from Parameter Count?</h2>
+<p>Usually no. Parameter count depends on:</p>
+<ul>
+<li>Hidden dimensions</li>
+<li>Number of layers</li>
+<li>Feed-forward size</li>
+<li>Vocabulary size</li>
+<li>Attention structure</li>
+</ul>
+<p>Different architectures can have the same parameter count while using different dimensions.</p>
+
+<h2>What is Model Architecture?</h2>
+<p>Architecture is the blueprint of the model. It defines:</p>
+<ul>
+<li>Number of layers</li>
+<li>Hidden dimensions</li>
+<li>Attention structure</li>
+<li>Feed-forward structure</li>
+<li>Vocabulary size</li>
+</ul>
+<p>Architecture creates parameter slots. Training learns parameter values.</p>
+<pre>Architecture = Building Blueprint
+Parameters   = Learned Settings Inside The Building</pre>
+
+<h2>Key Takeaways</h2>
+<ul>
+<li>Parameters are learned numerical values.</li>
+<li>Parameters represent learned strengths of mathematical transformations.</li>
+<li>Individual parameters have little meaning by themselves.</li>
+<li>Dimensions define the size of vector representations.</li>
+<li>Embeddings convert words into vectors.</li>
+<li>Embedding dimensions do not usually have human-readable names like RGB.</li>
+<li>Dimensions are often called latent features.</li>
+<li>Knowledge is distributed across many parameters and dimensions.</li>
+<li>Vectors represent concepts.</li>
+<li>Matrices transform concepts.</li>
+<li>Transformer layers use billions of parameters to reason about relationships.</li>
+<li>Architecture defines the model structure before training begins.</li>
+<li>Training adjusts parameter values to create the final model.</li>
+</ul>
+
+<p>The most important insight is that an LLM does not store knowledge as database fields or objects. Knowledge emerges from patterns distributed across vectors and billions of learned parameters.</p>
+
+</body>
+</html>

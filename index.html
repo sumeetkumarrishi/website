@@ -701,6 +701,7 @@ footer {
             <div class="nav-item">
                 <a href="#" class="nav-trigger">AI</a>
                 <div class="submenu">
+                    <a href="#llm-basics" data-page="llm-basics">LLM Basics</a>
                     <a href="#llm-evaluation" data-page="llm-evaluation">LLM Evaluation</a>
                     <a href="#rag" data-page="rag">RAG</a>
                 </div>
@@ -815,6 +816,23 @@ footer {
 <script>
 const pages = {
     home: { type: "home" },
+    "llm-basics": {
+        type: "section",
+        title: "LLM Basics",
+        intro: "First-principles concepts behind large language models — parameters, dimensions, embeddings, and architecture, and how they fit together.",
+        groups: [
+            { name: "Fundamentals", desc: "The building blocks of how LLMs represent and process information." }
+        ]
+    },
+    "parameters-dimensions-embeddings-architecture": {
+        type: "article",
+        url: "AI/llm-basics/parameters_dimensions_embeddings_architecture.html",
+        title: "Parameters, Dimensions, Embeddings, and Architecture",
+        section: "llm-basics",
+        group: "Fundamentals",
+        tag: "Concept",
+        summary: "What parameters and dimensions really are, how embeddings encode meaning, and how architecture defines the model."
+    },
     "llm-evaluation": {
         type: "section",
         title: "LLM Evaluation",
