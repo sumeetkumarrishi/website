@@ -821,7 +821,8 @@ const pages = {
         title: "LLM Basics",
         intro: "First-principles concepts behind large language models — parameters, dimensions, embeddings, and architecture, and how they fit together.",
         groups: [
-            { name: "Fundamentals", desc: "The building blocks of how LLMs represent and process information." }
+            { name: "Fundamentals", desc: "The building blocks of how LLMs represent and process information." },
+            { name: "Architecture", desc: "How a model is structured internally and how data flows through it." }
         ]
     },
     "parameters-dimensions-embeddings-architecture": {
@@ -832,6 +833,15 @@ const pages = {
         group: "Fundamentals",
         tag: "Concept",
         summary: "What parameters and dimensions really are, how embeddings encode meaning, and how architecture defines the model."
+    },
+    "inside-a-llama-decoder-layer": {
+        type: "article",
+        url: "AI/llm-basics/inside_a_llama_decoder_layer.html",
+        title: "Inside a Llama Decoder Layer",
+        section: "llm-basics",
+        group: "Architecture",
+        tag: "Deep Dive",
+        summary: "A step-by-step walkthrough of one decoder layer: attention, o_proj, residuals, RMSNorm, and MLP."
     },
     "llm-evaluation": {
         type: "section",

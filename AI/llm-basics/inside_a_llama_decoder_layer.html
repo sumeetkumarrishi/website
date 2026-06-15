@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Inside a Llama Decoder Layer</title>
+<style>
+body{font-family:Arial;max-width:1000px;margin:auto;padding:30px;line-height:1.7;color:#0b1220}
+h1,h2,h3{color:#1f2937}
+h2{margin-top:2rem;border-bottom:1px solid #e5e7eb;padding-bottom:0.4rem}
+.box{background:#f8faff;border:1px solid #e5e7eb;padding:15px 18px;border-radius:10px}
+pre{background:#0b1220;color:#e6edf3;padding:16px 18px;border-radius:10px;overflow-x:auto;line-height:1.5}
+blockquote{margin:1rem 0;padding:0.6rem 1rem;border-left:3px solid #2563eb;background:#f8faff;color:#374151;font-style:italic}
+code{background:#f1f5f9;padding:1px 5px;border-radius:4px;font-size:0.9em}
+hr{border:0;border-top:1px solid #e5e7eb;margin:2rem 0}
+</style>
+</head>
+<body>
+
+<h1>Inside a Llama Decoder Layer</h1>
+<p><strong>Category:</strong> AI → LLM Basics</p>
+
+<div class="box">
+<h2>Introduction</h2>
+<p>A large language model is built by stacking many identical <strong>decoder layers</strong>. Understanding what happens inside a single layer is the key to understanding the whole model.</p>
+<p>This walkthrough traces one complete decoder layer step by step. The concrete numbers used below describe a small example model (a compact Llama with 16 layers, a hidden size of 2048, a feed-forward size of 8192, and a vocabulary of 128,256 tokens).</p>
+</div>
+
+<h2>High-Level Architecture</h2>
+<pre>Input Token Vectors (2048)
+          &darr;
+     RMSNorm
+          &darr;
+   Self-Attention
+          &darr;
+      o_proj
+          &darr;
+   Residual Add
+          &darr;
+     RMSNorm
+          &darr;
+        MLP
+          &darr;
+   Residual Add
+          &darr;
+Output to Next Layer</pre>
+
+<h2>1. Self-Attention</h2>
+<p>The model creates three projections of the input:</p>
+<pre>Q = X &times; Wq
+K = X &times; Wk
+V = X &times; Wv</pre>
+<p>Meaning:</p>
+<pre>Q = What information do I need?
+K = What information can I provide?
+V = The actual information I contain.</pre>
+<p>The model calculates attention scores and determines:</p>
+<pre>How much information should flow
+between tokens?</pre>
+<p>Example:</p>
+<pre>Paris pays attention to:
+France  &rarr; 80%
+capital &rarr; 15%
+others  &rarr; 5%</pre>
+<p>The result is a new context-aware vector.</p>
+
+<h2>2. o_proj (Output Projection)</h2>
+<p>After attention finishes, we have an attention output. In this example model:</p>
+<pre>o_proj:
+2048 &rarr; 2048</pre>
+<p>Purpose:</p>
+<pre>Combine everything learned by attention
+into a single clean representation.</pre>
+<p>Think of it as:</p>
+<blockquote>Attention gathered information. o_proj organizes that information.</blockquote>
+<p>Human analogy:</p>
+<pre>Several researchers gathered findings.
+o_proj writes the final report.</pre>
+
+<h2>3. Residual Connection</h2>
+<p>The model does <strong>not</strong> throw away the original input. Instead:</p>
+<pre>Output =
+Original Input
++
+Attention Output</pre>
+<p>Example:</p>
+<pre>Original Paris Vector
++
+New Information About France</pre>
+<p>Purpose:</p>
+<pre>Keep original knowledge
+while adding new knowledge.</pre>
+<p>Without residual connections:</p>
+<pre>Information could be lost
+as layers become deeper.</pre>
+
+<h2>4. RMSNorm</h2>
+<p>Before entering the next stage, the model applies <strong>RMSNorm</strong>.</p>
+<p>Purpose:</p>
+<pre>Keep vector values stable.</pre>
+<p>Human analogy:</p>
+<pre>If some numbers become too large
+or too small,
+
+RMSNorm brings them back
+into a healthy range.</pre>
+<p>Think:</p>
+<blockquote>Attention works better when values stay balanced.</blockquote>
+
+<h2>5. MLP (Multi-Layer Perceptron)</h2>
+<p>Now the token already knows the context. The MLP asks:</p>
+<pre>What should I do with this information?</pre>
+<p>In this example model:</p>
+<pre>Input: 2048
+      &darr;
+gate_proj: 2048 &rarr; 8192
+
+up_proj:   2048 &rarr; 8192
+
+SiLU Activation
+
+down_proj: 8192 &rarr; 2048</pre>
+
+<h3>What MLP Does</h3>
+<p>Attention:</p>
+<pre>Collects information.</pre>
+<p>MLP:</p>
+<pre>Processes information.</pre>
+<p>Example — after attention:</p>
+<pre>Paris knows:
+
+- France exists
+- Capital relationship exists</pre>
+<p>MLP may strengthen concepts like:</p>
+<pre>Paris = city
+Paris = capital city
+Paris = capital of France</pre>
+<p>Think:</p>
+<blockquote>Attention = Gathering facts. MLP = Thinking about those facts.</blockquote>
+
+<h2>6. Second Residual Connection</h2>
+<p>Again:</p>
+<pre>Output =
+Previous Output
++
+MLP Output</pre>
+<p>Purpose:</p>
+<pre>Preserve earlier knowledge
+while adding refined understanding.</pre>
+
+<h2>Complete Layer Summary</h2>
+<pre>Input
+  &darr;
+RMSNorm
+  &darr;
+Self-Attention
+  &darr;
+o_proj
+  &darr;
+Add Original Input
+  &darr;
+RMSNorm
+  &darr;
+MLP
+  &darr;
+Add Previous Output
+  &darr;
+Layer Output</pre>
+
+<h2>Complete Model Summary</h2>
+<p>This example model has 16 decoder layers, so the full flow is:</p>
+<pre>Embeddings
+    &darr;
+Layer 1
+    &darr;
+Layer 2
+    &darr;
+Layer 3
+    &darr;
+...
+    &darr;
+Layer 16
+    &darr;
+Final RMSNorm
+    &darr;
+lm_head
+    &darr;
+128256 Vocabulary Scores
+    &darr;
+Choose Next Token</pre>
+
+<h2>Mental Model</h2>
+<pre>Attention:
+"Let me gather relevant information."
+
+o_proj:
+"Let me organize that information."
+
+Residual:
+"Don't forget what I already knew."
+
+RMSNorm:
+"Keep everything stable."
+
+MLP:
+"Let me think about the information."
+
+Residual:
+"Keep both old and new understanding."
+
+Next Layer:
+"Repeat the process with a better representation."</pre>
+
+</body>
+</html>
